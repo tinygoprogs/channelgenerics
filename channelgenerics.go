@@ -1,5 +1,11 @@
+/*
+A few small generic channel utilities.
+*/
 package channelgenerics
 
+// Join joins the two input channel in the one resulting channel.
+// Note: Spawns a goroutine, than terminates when both input channels are
+// closed.
 func Join[T any](a, b <-chan T) <-chan T {
 	c := make(chan T)
 	go func() {
@@ -31,6 +37,9 @@ func Join[T any](a, b <-chan T) <-chan T {
 
 type Fn[T any] func(t T) bool
 
+// Filter filters the input channel using fn, if fn returns true for an element
+// it is pushed into the resulting channel.
+// Note: Spawns a goroutine, than terminates when the input channel is closed.
 func Filter[T any](in <-chan T, fn Fn[T]) <-chan T {
 	out := make(chan T)
 	go func() {
